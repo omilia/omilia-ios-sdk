@@ -1,0 +1,26 @@
+/* 
+  Localizable.strings
+  OmiliaDemo
+
+  Created by Dimitris Togias on 01/08/2017.
+  Copyright © 2017 Omilia S.A. All rights reserved.
+*/
+
+// general
+"done" = "Done";
+"restart" = "Restart";
+"error" = "Error";
+"retry" = "Retry";
+"ok" = "OK";
+
+// errors
+"error_cannot_connect" = "Can't connect. Please check your Internet connection.";
+
+// alerts
+"mic_permission_title" = "Microphone Access Denied";
+"mic_permission_message" = "This app requires access to your device's Microphone.";
+
+
+// main
+"main_title" = "Omilia Virtual Assistant";
+"main.message_placeholder" = "Message";

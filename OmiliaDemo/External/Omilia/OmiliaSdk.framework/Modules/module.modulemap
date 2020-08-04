@@ -1,0 +1,6 @@
+framework module OmiliaSdk {
+  umbrella header "OmiliaSdk.h"
+
+  export *
+  module * { export * }
+}

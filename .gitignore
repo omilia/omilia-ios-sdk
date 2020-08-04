@@ -1,0 +1,53 @@
+# OSX Section
+.DS_Store
+*.swp
+*.lock
+profile
+IDEWorkspaceChecks.plist
+
+# SVN, CVS, HG
+.svn
+CVS
+.hg
+
+# XCode
+*.pbxuser
+*.mode1
+*.mode1v3
+*.mode2v3
+*.perspective
+*.perspectivev3
+*.xcclassmodel/
+*.xccheckout
+
+# NIB/XIB files still exist even on Storyboard projects
+*~.nib
+
+build/
+Build/
+DerivedData/
+
+!default.pbxuser
+!default.mode1v3
+!default.mode2v3
+!default.perspectivev3
+*.xcactivitylog
+xcuserdata
+*.moved-aside
+*.xcscmblueprint
+
+*.hmap
+*.ipa
+
+# CocoaPods
+Pods
+
+# AppCode
+.idea/
+
+# snapshop folder
+screenshots/
+
+# Carthage
+Carthage/Build
+Carthage/Checkouts
