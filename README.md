@@ -56,12 +56,14 @@ In the Project Navigator, open the source file of your application delegate. Add
 
 // ...
 
+[OmiliaClient setUrl:{YourUrl};
+
 [Omilia launchWithApiKey:@"{YourApiKey}"];
 ```
 
 ![][delegate]
 
-**Note**: Initializing the Omilia SDK like this is `very important`. Replace `{YourApiKey}` with your api key.
+**Note**: Initializing the Omilia SDK like this is `very important`. Replace `{YourApiKey}` with your api key and please provide a `{YourUrl}`.
 
 To use the omilia functionality just instantiate `OmiliaViewController` class.
 

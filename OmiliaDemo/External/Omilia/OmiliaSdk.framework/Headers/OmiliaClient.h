@@ -41,7 +41,7 @@ typedef NS_ENUM(NSUInteger, OmiliaClientCommandId) {
 
 + (void)setUserId:(NSString *)userId;
 + (NSString *)host;
-+ (void)setBaseUrl:(NSString *)baseUrl;
++ (void)setUrl:(NSString *)url;
 + (void)launchWithApiKey:(NSString *)apiKey;
 + (void)launchWithApiKey:(NSString *)apiKey options:(NSDictionary *)launchOptions;
 

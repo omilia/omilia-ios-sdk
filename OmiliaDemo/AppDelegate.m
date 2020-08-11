@@ -28,8 +28,8 @@
     NSString *userId = [standardUserDefaults stringForKey:@"user_id"];
     [OmiliaClient setUserId:userId];
     
-    NSString *dmtBaseUrl = [standardUserDefaults stringForKey:@"base_url"];
-    [OmiliaClient setBaseUrl:dmtBaseUrl];
+    NSString *dmtUrl = [standardUserDefaults stringForKey:@"url"];
+    [OmiliaClient setUrl:dmtUrl];
         
     [OmiliaClient launchWithApiKey:OMILIA_API_KEY];
     
