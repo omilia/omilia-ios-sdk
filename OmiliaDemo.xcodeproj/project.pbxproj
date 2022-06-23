@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -62,18 +62,18 @@
 		5E94A5512279B3F500C67B01 /* NSString+JSQMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E94A5212279B3F500C67B01 /* NSString+JSQMessages.m */; };
 		5E94A5522279B3F500C67B01 /* UIView+JSQMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E94A5242279B3F500C67B01 /* UIView+JSQMessages.m */; };
 		5E9F592C1F307C7A002852DD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5E9F592B1F307C7A002852DD /* Localizable.strings */; };
-		5EFA97DD24D99CEF000BAB51 /* OmiliaSdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EFA97DB24D99CE7000BAB51 /* OmiliaSdk.framework */; };
-		5EFA97DE24D99CEF000BAB51 /* OmiliaSdk.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5EFA97DB24D99CE7000BAB51 /* OmiliaSdk.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A09899902864DF8F00C17792 /* OmiliaSdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A098998E2864DF8B00C17792 /* OmiliaSdk.xcframework */; };
+		A09899912864DF8F00C17792 /* OmiliaSdk.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A098998E2864DF8B00C17792 /* OmiliaSdk.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		5E8EA0691DBA40C500124FFC /* Embed Frameworks */ = {
+		A09899922864DF8F00C17792 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				5EFA97DE24D99CEF000BAB51 /* OmiliaSdk.framework in Embed Frameworks */,
+				A09899912864DF8F00C17792 /* OmiliaSdk.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -188,6 +188,7 @@
 		5E94A5252279B3F500C67B01 /* NSBundle+JSQMessages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+JSQMessages.h"; sourceTree = "<group>"; };
 		5E9F592B1F307C7A002852DD /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = OmiliaDemo/Resources/Localizable.strings; sourceTree = "<group>"; };
 		5EFA97DB24D99CE7000BAB51 /* OmiliaSdk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OmiliaSdk.framework; sourceTree = "<group>"; };
+		A098998E2864DF8B00C17792 /* OmiliaSdk.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OmiliaSdk.xcframework; path = External/Omilia/OmiliaSdk.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,8 +196,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5EFA97DD24D99CEF000BAB51 /* OmiliaSdk.framework in Frameworks */,
 				5E8EA0621DBA3FD000124FFC /* AVFoundation.framework in Frameworks */,
+				A09899902864DF8F00C17792 /* OmiliaSdk.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,6 +249,7 @@
 		5E8EA0391DBA317E00124FFC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A098998E2864DF8B00C17792 /* OmiliaSdk.xcframework */,
 				5E8EA03A1DBA317E00124FFC /* main.m */,
 			);
 			name = "Supporting Files";
@@ -456,7 +458,7 @@
 				5E8EA0321DBA317E00124FFC /* Sources */,
 				5E8EA0331DBA317E00124FFC /* Frameworks */,
 				5E8EA0341DBA317E00124FFC /* Resources */,
-				5E8EA0691DBA40C500124FFC /* Embed Frameworks */,
+				A09899922864DF8F00C17792 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -473,7 +475,7 @@
 		5E8EA02E1DBA317E00124FFC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1340;
 				ORGANIZATIONNAME = "Omilia S.A.";
 				TargetAttributes = {
 					5E8EA0351DBA317E00124FFC = {
@@ -619,6 +621,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -644,7 +647,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -676,6 +679,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -695,7 +699,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -713,14 +717,18 @@
 					"$(PROJECT_DIR)/OmiliaDemo/External/Omilia",
 				);
 				INFOPLIST_FILE = OmiliaDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/OmiliaDemo/External/Omilia",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.omilia.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_WORKSPACE = NO;
 			};
 			name = Debug;
 		};
@@ -734,14 +742,18 @@
 					"$(PROJECT_DIR)/OmiliaDemo/External/Omilia",
 				);
 				INFOPLIST_FILE = OmiliaDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/OmiliaDemo/External/Omilia",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.omilia.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_WORKSPACE = NO;
 			};
 			name = Release;
 		};

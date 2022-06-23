@@ -1,6 +1,6 @@
 //
 //  OmiliaSdk.h
-//  Omilia
+//  Omilia SDK
 //
 //  Created by Dimitris Togias on 01/10/16.
 //  Copyright © 2016 Omilia S.A. All rights reserved.
@@ -17,5 +17,6 @@ FOUNDATION_EXPORT const unsigned char OmiliaSdkVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <OmiliaSdk/PublicHeader.h>
 
 #import <OmiliaSdk/OmiliaClient.h>
+#import <OmiliaSdk/OMISpeechRecognizer.h>
 #import <OmiliaSdk/OMISpeechSynthesizer.h>
 #import <OmiliaSdk/OMIReachability.h>

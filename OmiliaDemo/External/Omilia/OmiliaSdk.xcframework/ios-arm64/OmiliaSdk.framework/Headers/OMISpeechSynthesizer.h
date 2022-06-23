@@ -1,6 +1,6 @@
 //
 //  OMISpeechSynthesizer.h
-//  Omilia
+//  Omilia SDK
 //
 //  Created by Dimitris Togias on 03/06/16.
 //  Copyright © 2016 Omilia S.A. All rights reserved.

@@ -15,8 +15,13 @@
 {
     OmiliaClient *_client;
     
+    // state
+    BOOL _shouldMicBeEnabled;
+    BOOL _hasMicPermissions;
+    
     // ui
     UIButton *_sendButton;
+    UIButton *_micButton;
     
     JSQMessagesBubbleImage *_outgoingBubbleImageData;
     JSQMessagesBubbleImage *_incomingBubbleImageData;
@@ -39,6 +44,12 @@
     self.items = [NSMutableArray new];
     self.title = NSLocalizedString(@"main_title", nil);
     
+    UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu"]
+                                                                   style:UIBarButtonItemStyleDone
+                                                                  target:self
+                                                                  action:@selector(_openMenu)];
+    self.navigationItem.leftBarButtonItem = menuButton;
+    
     ////////////////////////////////////////////////////////////////////////////////
     /// config
     UIColor *brandColor = [UIColor colorWithRed:120.0/255.0 green:120.0/255.0 blue:184.0/255.0 alpha:1.0];
@@ -58,11 +69,24 @@
     
     self.inputToolbar.contentView.rightBarButtonItem = _sendButton;
     
-    self.inputToolbar.contentView.leftBarButtonItem = nil;
+    _micButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 40.0f, 40.0f)];
+    [_micButton setImage:[UIImage imageNamed:@"mic"] forState:UIControlStateNormal];
+    [_micButton setImage:[UIImage imageNamed:@"mic_selected"] forState:UIControlStateHighlighted];
+    [_micButton setImage:[UIImage imageNamed:@"mic_selected"] forState:UIControlStateSelected];
+    [_micButton setImage:[UIImage imageNamed:@"mic_disabled"] forState:UIControlStateDisabled];
+    
+    self.inputToolbar.contentView.leftBarButtonItem = _micButton;
+
 
     /// omilia servers
     _client = [OmiliaClient sharedClient];
     _client.delegate = self;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+- (void)_openMenu
+{
+    [_client startRecognition];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,8 +97,29 @@
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+- (void)onMicPermissions:(BOOL)granted
+{
+    _hasMicPermissions = granted;
+    [self performSelectorOnMainThread:@selector(_refreshMicState) withObject:nil waitUntilDone:NO];
+    
+    if (!granted) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"mic_permission_title", nil)
+                                                                       message:NSLocalizedString(@"mic_permission_message", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"ok", nil)
+                                                  style:UIAlertActionStyleDefault
+                                                handler:nil]];
+        [self dismissViewControllerAnimated:YES completion:nil];
+        [self presentViewController:alert animated:true completion:nil];
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 - (void)_showAlertAndReconnect:(NSString *)message
 {
+    _shouldMicBeEnabled = false;
+    [self performSelectorOnMainThread:@selector(_refreshMicState) withObject:nil waitUntilDone:NO];
+    
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"error", nil)
                                                                    message:message
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -84,7 +129,9 @@
                                             handler:^(UIAlertAction * _Nonnull action) {
                                                 
                                                 if ([[OMIReachability reachabilityWithHostname:[OmiliaClient host]] isReachable]) {
-                                                    [self->_client start];
+                                                    [self->_client connect];
+                                                    self->_shouldMicBeEnabled = true;
+                                                    [self _refreshMicState];
                                                 } else {
                                                     [self dismissViewControllerAnimated:YES completion:nil];
                                                     [self presentViewController:alert animated:true completion:nil];
@@ -98,18 +145,28 @@
 ////////////////////////////////////////////////////////////////////////////////
 - (void)_handleStartRecognition:(NSString *)command
 {
-    // TODO: TO BE IMPLEMENTED
+    _shouldMicBeEnabled = true;
+    [self performSelectorOnMainThread:@selector(_refreshMicState) withObject:nil waitUntilDone:NO];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 - (void)_handleStopRecognition:(NSString *)command
 {
-    // TODO: TO BE IMPLEMENTED
+    _micButton.selected = false;
+    [self _showMessageView];
+    
+    _shouldMicBeEnabled = true;
+    [self performSelectorOnMainThread:@selector(_refreshMicState) withObject:nil waitUntilDone:NO];
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 - (void)_handleText:(NSString *)command
 {
+    if (command == nil) {
+        return;
+    }
+    
     JSQMessage *message = [[JSQMessage alloc] initWithSenderId:@"user"
                                              senderDisplayName:@"USR"
                                                           date:[NSDate date]
@@ -143,6 +200,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 - (void)_handleFinalResult:(NSString *)command
 {
+    if (_partialMessage == nil) {
+        _partialMessage = [[JSQMessage alloc] initWithSenderId:self.senderId
+                                             senderDisplayName:self.senderDisplayName
+                                                          date:[NSDate date]
+                                                          text:command];
+        [self.items addObject:_partialMessage];
+        
+        [self.collectionView insertItemsAtIndexPaths:@[ [NSIndexPath indexPathForItem:(self.items.count - 1) inSection:0] ]];
+        [self scrollToBottomAnimated:YES];
+        _partialMessage = nil;
+        return;
+    }
+    
     _partialMessage.text = command;
     [self.collectionView reloadItemsAtIndexPaths:@[ [NSIndexPath indexPathForItem:(self.items.count - 1) inSection:0]]];
     [self scrollToBottomAnimated:YES];
@@ -154,6 +224,14 @@
 {
     self.showTypingIndicator = on;
     [self scrollToBottomAnimated:YES];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+- (void)_disableControls
+{
+    _micButton.enabled = false;
+    _sendButton.enabled = false;
+    self.inputToolbar.contentView.textView.userInteractionEnabled = false;
 }
 
 #pragma mark - Overrides
@@ -173,6 +251,25 @@
     [_client sendText:text];
     [self finishSendingMessageAnimated:YES];
 }
+
+////////////////////////////////////////////////////////////////////////////////
+- (void)didPressAccessoryButton:(UIButton *)sender
+{
+    [self.inputToolbar.contentView.textView resignFirstResponder];
+    
+    /// toggle recognition
+    if (_client.state == OmiliaClientStateRecognizing) {
+        [_client stopRecognition];
+        _micButton.selected = false;
+        [self _showMessageView];
+    } else {
+        [_client startRecognition];
+        _micButton.selected = true;
+        [self _hideMessageView];
+    }
+}
+
+
 
 #pragma mark - JSQMessages CollectionView DataSource
 ////////////////////////////////////////////////////////////////////////////////
@@ -241,42 +338,57 @@
 
 #pragma mark - OmiliaClientDelegate
 ////////////////////////////////////////////////////////////////////////////////
-- (void)onCommand:(int)commandID withResponse:(NSString *)response
+- (void)clientDidConnect:(OmiliaClient *)client
 {
-    if (commandID == OmiliaClientCommandIdError) {
-        [self _showAlertAndReconnect:response];
+    [client startDialog];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+- (void)client:(OmiliaClient *)client didFailWithError:(NSError *)error
+{
+    [self _showAlertAndReconnect:error.localizedDescription];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+- (void)client:(OmiliaClient *)client didReceiveMessageType:(OmiliaClientMessageType)type withResponse:(NSString *)response
+{
+    // text
+    if (type == OmiliaClientMessageTypeTyping) {
+        [self _handleTyping:YES];
         return;
     }
     
-    if (commandID == OmiliaClientCommandIdStartRecognition) {
-        [self _handleStartRecognition:response];
-        return;
-    }
-    
-    if (commandID == OmiliaClientCommandIdStopRecognition) {
-        [self _handleStopRecognition:response];
-        return;
-    }
-    
-    if (commandID == OmiliaClientCommandIdText) {
+    if (type == OmiliaClientMessageTypeText) {
         [self _handleTyping:NO];
         [self _handleText:response];
         return;
     }
     
-    if (commandID == OmiliaClientCommandIdPartialResult) {
+    if (type == OmiliaClientMessageTypeDialogStop) {
+        [self _disableControls];
+        return;
+    }
+    
+    // speech recognition
+    if (type == OmiliaClientMessageTypeStartRecognition) {
+        [self _handleStartRecognition:response];
+        return;
+    }
+    
+    if (type == OmiliaClientMessageTypeStopRecognition) {
+        [self _handleStopRecognition:response];
+        return;
+    }
+    
+    if (type == OmiliaClientMessageTypePartialResult) {
         [self _handleTyping:NO];
         [self _handlePartialResult:response];
         return;
     }
     
-    if (commandID == OmiliaClientCommandIdFinalResult) {
+    if (type == OmiliaClientMessageTypeFinalResult) {
+        [self _handleStopRecognition:response];
         [self _handleFinalResult:response];
-        return;
-    }
-    
-    if (commandID == OmiliaClientCommandIdTyping) {
-        [self _handleTyping:YES];
         return;
     }
 }
@@ -293,15 +405,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 - (void)_applicationWillResignActive
 {
-    [_client stop];
+    [_client disconnect];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 - (void)_showMessageView
 {
     [UIView animateWithDuration:0.4 animations:^{
-        self.inputToolbar.contentView.textView.alpha = 1.0;
-        self->_sendButton.alpha = 1.0;
+        self.inputToolbar.contentView.textView.userInteractionEnabled = YES;
+        self->_sendButton.enabled = YES;
     }];
 }
 
@@ -309,8 +421,8 @@
 - (void)_hideMessageView
 {
     [UIView animateWithDuration:0.4 animations:^{
-        self.inputToolbar.contentView.textView.alpha = 0.0;
-        self->_sendButton.alpha = 0.0;
+        self.inputToolbar.contentView.textView.userInteractionEnabled = NO;
+        self->_sendButton.enabled = NO;
     }];
 }
 
@@ -322,14 +434,25 @@
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+- (void)_refreshMicState
+{
+    _micButton.enabled = (_shouldMicBeEnabled && _hasMicPermissions);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 - (void)_normalEnterForeground
 {
     if ([[OMIReachability reachabilityWithHostname:[OmiliaClient host]] isReachable]) {
         [self _resetData];
-        [_client start];
+        [_client connect];
     } else {
         [self _showAlertAndReconnect:NSLocalizedString(@"error_cannot_connect", nil)];
     }
+    
+    /// audio
+    [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
+        [self onMicPermissions:granted];
+    }];
 }
 
 @end

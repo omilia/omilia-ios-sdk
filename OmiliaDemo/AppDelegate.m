@@ -10,7 +10,7 @@
 
 #import <OmiliaSdk/OmiliaSdk.h>
 
-#define OMILIA_API_KEY   @""
+#define OMILIA_API_KEY   @"cb2e0f9b5cbDC43Fe46b0939452625ECBE494a52addc3f182cc51214ba69d903607CB75559D8FA44b8828222c7b1688108872c405DA30Cfda946a6e9"
 
 ////////////////////////////////////////////////////////////////////////////////
 @implementation AppDelegate
@@ -43,9 +43,26 @@
     UIColor *brandColor = [UIColor colorWithRed:120.0/255.0 green:120.0/255.0 blue:184.0/255.0 alpha:1.0];
     UIColor *tintColor = [UIColor whiteColor];
     
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+        [appearance configureWithOpaqueBackground];
+        appearance.backgroundColor = brandColor;
+        
+        appearance.titleTextAttributes = @{ NSForegroundColorAttributeName : tintColor};
+        appearance.shadowImage = [UIImage new];
+        appearance.shadowColor = [UIColor clearColor];
+        [UINavigationBar appearance].standardAppearance = appearance;
+        [UINavigationBar appearance].scrollEdgeAppearance = appearance;
+        
+        [[UINavigationBar appearance] setTintColor:tintColor];
+         
+         return;
+    }
+    
     [[UINavigationBar appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : tintColor}];
     [[UINavigationBar appearance] setBarTintColor:brandColor];
     [[UINavigationBar appearance] setTintColor:tintColor];
+    [UINavigationBar appearance].shadowImage = [UIImage new];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

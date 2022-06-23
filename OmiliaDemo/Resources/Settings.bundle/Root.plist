@@ -10,11 +10,11 @@
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
-			<string>Base URL</string>
+			<string>URL</string>
 			<key>Key</key>
-			<string>base_url</string>
+			<string>url</string>
 			<key>DefaultValue</key>
-			<string>ws://localhost</string>
+			<string>wss://abc-bank.omilia.com</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>KeyboardType</key>
